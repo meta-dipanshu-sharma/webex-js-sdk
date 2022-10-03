@@ -186,6 +186,17 @@ module.exports = {
         }, '');
 
         for (const packageName of packages) {
+          const argString = Object.keys(argv).reduce((acc, key) => {
+            const value = argv[key];
+
+            if (typeof value === 'boolean') {
+              acc += value ? ` --${key}` : ` --no-${key}`;
+            }
+
+            return acc;
+          }, '');
+
+          console.log(`Package ${packageName} Args ${argString}`);
           const [cmd, ...args] = `yarn run test --silent --no-coverage-report --packages ${packageName}${argString}`.split(' ');
 
           await spawn(cmd, args);
