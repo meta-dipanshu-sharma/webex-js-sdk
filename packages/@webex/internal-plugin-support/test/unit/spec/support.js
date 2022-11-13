@@ -8,16 +8,14 @@ import Support from '@webex/internal-plugin-support';
 import {assert} from '@webex/test-helper-chai';
 import MockWebex from '@webex/test-helper-mock-webex';
 
-describe('plugin-support', function () {
-  this.timeout(20000);
-
+describe('plugin-support', () => {
   let webex;
 
   beforeEach(() => {
     webex = new MockWebex({
       children: {
-        support: Support
-      }
+        support: Support,
+      },
     });
 
     webex.internal.device.userId = 'user-abc-123';
@@ -29,18 +27,20 @@ describe('plugin-support', function () {
       const result = webex.internal.support._constructFileMetadata({});
 
       assert.equal(result.length, 3);
-      assert.deepEqual(result, [{
-        key: 'trackingId',
-        value: 'mock-webex_88888888-4444-4444-4444-aaaaaaaaaaaa'
-      },
-      {
-        key: 'userId',
-        value: webex.internal.device.userId
-      },
-      {
-        key: 'orgId',
-        value: webex.internal.device.orgId
-      }]);
+      assert.deepEqual(result, [
+        {
+          key: 'trackingId',
+          value: 'mock-webex_88888888-4444-4444-4444-aaaaaaaaaaaa',
+        },
+        {
+          key: 'userId',
+          value: webex.internal.device.userId,
+        },
+        {
+          key: 'orgId',
+          value: webex.internal.device.orgId,
+        },
+      ]);
     });
 
     it('does not send sessionId key if sessionId is not defined', () => {
