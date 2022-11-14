@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
-
 import {assert} from '@webex/test-helper-chai';
 import Avatar from '@webex/internal-plugin-avatar';
 import User from '@webex/internal-plugin-user';
@@ -99,8 +98,7 @@ describe('plugin-avatar', () => {
         return avatar
           .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
           .then((result) =>
-            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80')
-          );
+            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'));
       });
 
       it('fails to retrieve an avatar url', async () => {
@@ -175,8 +173,7 @@ describe('plugin-avatar', () => {
         return avatar
           .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0', {size: 110})
           .then((result) =>
-            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110')
-          );
+            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110'));
       });
 
       it('retrieves an avatar url for a non-standard size', () => {
@@ -246,8 +243,7 @@ describe('plugin-avatar', () => {
         return avatar
           .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0', {size: 35})
           .then((result) =>
-            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40')
-          );
+            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40'));
       });
 
       describe('when options.hideDefaultAvatar is true', () => {
@@ -387,8 +383,7 @@ describe('plugin-avatar', () => {
           });
 
           return deferred.then((res) =>
-            assert.deepEqual(res, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80')
-          );
+            assert.deepEqual(res, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'));
         });
       });
     });
@@ -506,16 +501,14 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~80'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });
@@ -544,57 +537,22 @@ describe('plugin-avatar', () => {
                 url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40',
                 cacheControl: 'public max-age=3600'
               },
-              50: {
-                size: 50,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~50',
-                cacheControl: 'public max-age=3600'
-              },
-              80: {
-                size: 80,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80',
-                cacheControl: 'public max-age=3600'
-              },
-              110: {
-                size: 110,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110',
-                cacheControl: 'public max-age=3600'
-              },
-              135: {
-                size: 135,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~135',
-                cacheControl: 'public max-age=3600'
-              },
-              192: {
-                size: 192,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~192',
-                cacheControl: 'public max-age=3600'
-              },
-              640: {
-                size: 640,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~640',
-                cacheControl: 'public max-age=3600'
-              },
-              1600: {
-                size: 1600,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~1600',
-                cacheControl: 'public max-age=3600'
-              }
-            }
-          },
-          statusCode: 200,
-          options: {
-            body: [
-              {
-                uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
-                sizes: [40, 50, 80, 110, 135, 192, 640, 1600]
-              },
-              {
-                uuid: '88888888-4444-4444-4444-aaaaaaaaaaa1',
-                sizes: [40, 50, 80, 110, 135, 192, 640, 1600]
-              }
-            ]
-          }
-        }));
+            },
+            statusCode: 200,
+            options: {
+              body: [
+                {
+                  uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
+                  sizes: [40, 50, 80, 110, 135, 192, 640, 1600],
+                },
+                {
+                  uuid: '88888888-4444-4444-4444-aaaaaaaaaaa1',
+                  sizes: [40, 50, 80, 110, 135, 192, 640, 1600],
+                },
+              ],
+            },
+          })
+        );
 
         return Promise.all([
           avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
@@ -723,16 +681,14 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1', {size: 40})
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~40'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });
@@ -850,16 +806,14 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1', {size: 110})
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~110'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });
@@ -977,24 +931,21 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1', {size: 40})
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~40'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1', {size: 110})
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~110'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });
@@ -1122,16 +1073,14 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1', {size: 100})
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~110'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });
@@ -1433,40 +1382,35 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa2')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa2~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa3')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa3~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
 
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
@@ -1474,128 +1418,112 @@ describe('plugin-avatar', () => {
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa2')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa2~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa2')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa2~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa2')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa2~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa3')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa3~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa1~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa4')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa4~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
-              )
-            ),
+              )),
           avatar
             .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa5')
             .then((result) =>
               assert.deepEqual(
                 result,
                 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa5~80'
-              )
-            ),
+              )),
         ]).then(() => {
           assert.callCount(webex.request, 1);
         });

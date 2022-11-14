@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
-
 import {set} from 'lodash';
 import {assert} from '@webex/test-helper-chai';
 import sinon from 'sinon';
@@ -453,7 +452,7 @@ describe('webex-core', () => {
         const supertoken = makeToken(webex, {
           access_token: 'ST',
           refresh_token: 'RT',
-          expires: Date.now() - 10000
+          expires: Date.now() - 10000,
         });
 
         sinon.stub(supertoken, 'refresh').returns(Promise.reject());
@@ -745,8 +744,7 @@ describe('webex-core', () => {
             assert.isRejected(
               credentials.getUserToken(),
               /Current state cannot produce an access token/
-            )
-          );
+            ));
       });
     });
 

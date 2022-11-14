@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
-
 import {forEach} from 'lodash';
 import {assert} from '@webex/test-helper-chai';
 import MockWebSocket from '@webex/test-helper-mock-web-socket';

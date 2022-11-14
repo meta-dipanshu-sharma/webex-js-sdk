@@ -3,7 +3,6 @@
  */
 
 /* eslint camelcase: [0] */
-
 import url from 'url';
 
 import {assert} from '@webex/test-helper-chai';
@@ -38,7 +37,8 @@ browserOnly(describe)('plugin-authorization-browser-first-party', () => {
           href,
         },
         sessionStorage: {
-          getItem: sinon.stub().onCall(0).returns(pkceVerifier).onCall(1).returns(csrfToken),
+          getItem: sinon.stub().onCall(0).returns(pkceVerifier).onCall(1)
+            .returns(csrfToken),
           removeItem: sinon.spy(),
           setItem: sinon.spy(),
         },
@@ -185,7 +185,8 @@ browserOnly(describe)('plugin-authorization-browser-first-party', () => {
             return makeWebex(
               'http://127.0.0.1:8000/?error=invalid_scope&error_description=The%20requested%20scope%20is%20invalid.'
             );
-          } catch (e) {
+          }
+          catch (e) {
             expect(e.message).toBe('Cannot convert object to primitive value');
           }
         });

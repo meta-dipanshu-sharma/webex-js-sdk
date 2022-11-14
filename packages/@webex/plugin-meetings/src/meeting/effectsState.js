@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+
 import {Media as WebRTCMedia} from '@webex/internal-media-core';
 
 import BEHAVIORAL_METRICS from '../metrics/constants';
@@ -124,7 +125,8 @@ class EffectsState {
       bnr.enabled = BNR_STATUS.ENABLED;
       this.state.callToWebrtcBNRInProgress = false;
       Metrics.sendBehavioralMetric(BEHAVIORAL_METRICS.ENABLE_BNR_SUCCESS);
-    } catch (error) {
+    }
+    catch (error) {
       bnr.enabled = BNR_STATUS.NOT_ENABLED;
       this.state.callToWebrtcBNRInProgress = false;
       LoggerProxy.logger.error('Meeting:index#enableBNR.', error);
@@ -183,7 +185,8 @@ class EffectsState {
       this.state.callToWebrtcBNRInProgress = false;
 
       Metrics.sendBehavioralMetric(BEHAVIORAL_METRICS.DISABLE_BNR_SUCCESS);
-    } catch (error) {
+    }
+    catch (error) {
       bnr.enabled = BNR_STATUS.ENABLED;
       this.state.callToWebrtcBNRInProgress = false;
       LoggerProxy.logger.error(`Meeting:index#disableBNR. ${error}`);

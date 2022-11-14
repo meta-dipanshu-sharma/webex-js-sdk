@@ -1,7 +1,6 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
-
 import {assert} from '@webex/test-helper-chai';
 import {beforeAll} from '@jest/globals';
 
@@ -41,8 +40,7 @@ export default function runAbstractStorageAdapterSpec(adapter) {
       beforeAll(() =>
         adapter.bind(namespace, options).then((b) => {
           bound = b;
-        })
-      );
+        }));
 
       describe('#put()', () => {
         it('puts a primitive into the store', () =>
@@ -76,8 +74,7 @@ export default function runAbstractStorageAdapterSpec(adapter) {
 
         it('handles concurrency', () =>
           Promise.all([bound.put(key, 1), bound.put(key, 2), bound.put(key, 3)]).then(() =>
-            bound.get(key).then((result) => assert.deepEqual(result, 3))
-          ));
+            bound.get(key).then((result) => assert.deepEqual(result, 3))));
 
         it('puts same key in different namespaces', () =>
           bound.put(key, primitive).then(() =>
@@ -88,10 +85,8 @@ export default function runAbstractStorageAdapterSpec(adapter) {
                 Promise.all([
                   bound.get(key).then((result) => assert.deepEqual(result, primitive)),
                   b.get(key).then((result) => assert.deepEqual(result, primitive2)),
-                ])
-              );
-            })
-          ));
+                ]));
+            })));
       });
 
       describe('#get()', () => {

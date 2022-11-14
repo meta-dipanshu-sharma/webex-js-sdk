@@ -1,6 +1,7 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
+
 /* eslint-disable no-underscore-dangle */
 import {assert} from '@webex/test-helper-chai';
 import MockWebex from '@webex/test-helper-mock-webex';
@@ -119,7 +120,8 @@ describe('plugin-conversation', () => {
       it('should not return a promise', () => {
         try {
           webex.internal.conversation.getConvoUrl({url: 'convoUrl'}).then();
-        } catch (error) {
+        }
+        catch (error) {
           assert.equal(
             error.message,
             'webex.internal.conversation.getConvoUrl(...).then is not a function'
@@ -265,7 +267,8 @@ describe('plugin-conversation', () => {
       it('should throw an error when called without a conversationUrl option', (done) => {
         try {
           webex.internal.conversation.listActivitiesThreadOrdered({});
-        } catch (e) {
+        }
+        catch (e) {
           assert.equal(e.message, 'must provide a conversation URL or conversation ID');
           done();
         }
@@ -299,8 +302,7 @@ describe('plugin-conversation', () => {
                 resolve({
                   value: returnedVal,
                   next() {},
-                })
-              );
+                }));
             },
           });
         });
@@ -414,7 +416,8 @@ describe('plugin-conversation', () => {
               externalCount += 1;
               incrementLoop();
             }
-          } catch (e) {
+          }
+          catch (e) {
             assert.equal(e.message, 'max fetches reached');
           }
         });
@@ -748,7 +751,8 @@ describe('plugin-conversation', () => {
           assert.throws(
             webex.internal.conversation._createParsedServerActivity(activity, activities)
           );
-        } catch (e) {
+        }
+        catch (e) {
           // swallow error
         }
       });

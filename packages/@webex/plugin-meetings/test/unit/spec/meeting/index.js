@@ -1,6 +1,7 @@
 /*!
  * Copyright (c) 2015-2020 Cisco Systems, Inc. See LICENSE file.
  */
+
 import 'jsdom-global/register';
 import {cloneDeep, isEqual} from 'lodash';
 import sinon from 'sinon';
@@ -656,8 +657,7 @@ describe('plugin-meetings', () => {
           sinon
             .stub(Media, 'getSupportedDevice')
             .callsFake((options) =>
-              Promise.resolve({sendAudio: options.sendAudio, sendVideo: options.sendVideo})
-            );
+              Promise.resolve({sendAudio: options.sendAudio, sendVideo: options.sendVideo}));
           sinon.stub(Media, 'getUserMedia').returns(Promise.resolve(['stream1', 'stream2']));
         });
         afterEach(() => {
@@ -942,7 +942,8 @@ describe('plugin-meetings', () => {
           try {
             await meeting.addMedia();
             assert.fail('addMedia should have thrown an exception.');
-          } catch (err) {
+          }
+          catch (err) {
             assert.instanceOf(err, UserInLobbyError);
           }
         });
@@ -971,7 +972,8 @@ describe('plugin-meetings', () => {
           try {
             await meeting.addMedia();
             assert.fail('addMedia should have thrown an exception.');
-          } catch (err) {
+          }
+          catch (err) {
             assert.exists(err);
           }
 
@@ -979,7 +981,8 @@ describe('plugin-meetings', () => {
             await meeting.addMedia({
               mediaSettings: {},
             });
-          } catch (err) {
+          }
+          catch (err) {
             assert.fail('should not throw an error');
           }
         });
@@ -1032,7 +1035,7 @@ describe('plugin-meetings', () => {
           }));
           MediaUtil.createPeerConnection.resetHistory();
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1062,10 +1065,10 @@ describe('plugin-meetings', () => {
           meeting.roap.doTurnDiscovery = sinon.stub().resolves({
             url: FAKE_TURN_URL,
             username: FAKE_TURN_USER,
-            password: FAKE_TURN_PASSWORD
+            password: FAKE_TURN_PASSWORD,
           });
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1076,7 +1079,7 @@ describe('plugin-meetings', () => {
           assert.calledWith(MediaUtil.createPeerConnection, {
             url: FAKE_TURN_URL,
             username: FAKE_TURN_USER,
-            password: FAKE_TURN_PASSWORD
+            password: FAKE_TURN_PASSWORD,
           });
         }); */
 
@@ -1084,7 +1087,7 @@ describe('plugin-meetings', () => {
           meeting.meetingState = 'ACTIVE';
           meeting.mediaProperties.peerConnection.connectionState = 'DISCONNECTED';
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1108,7 +1111,7 @@ describe('plugin-meetings', () => {
             sinon.stub(StatsAnalyzerModule, 'StatsAnalyzer').returns(statsAnalyzerStub);
 
             await meeting.addMedia({
-              mediaSettings: {}
+              mediaSettings: {},
             });
           });
 
@@ -1117,51 +1120,79 @@ describe('plugin-meetings', () => {
           });
 
           it('LOCAL_MEDIA_STARTED triggers "meeting:media:local:start" event and sends metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STARTED, {type: 'audio'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STARTED,
+              {type: 'audio'}
+            );
 
             assert.calledWith(
               TriggerProxy.trigger,
               sinon.match.instanceOf(Meeting),
               {
                 file: 'meeting/index',
-                function: 'addMedia'
+                function: 'addMedia',
               },
               EVENT_TRIGGERS.MEETING_MEDIA_LOCAL_STARTED,
               {
-                type: 'audio'
+                type: 'audio',
               }
             );
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.SENDING_MEDIA_START, data: {mediaType: 'audio'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.SENDING_MEDIA_START,
+              data: {mediaType: 'audio'},
+            });
           });
 
           it('LOCAL_MEDIA_STOPPED triggers the right metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STOPPED, {type: 'video'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STOPPED,
+              {type: 'video'}
+            );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.SENDING_MEDIA_STOP, data: {mediaType: 'video'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.SENDING_MEDIA_STOP,
+              data: {mediaType: 'video'},
+            });
           });
 
           it('REMOTE_MEDIA_STARTED triggers "meeting:media:remote:start" event and sends metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STARTED, {type: 'video'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STARTED,
+              {type: 'video'}
+            );
 
             assert.calledWith(
               TriggerProxy.trigger,
               sinon.match.instanceOf(Meeting),
               {
                 file: 'meeting/index',
-                function: 'addMedia'
+                function: 'addMedia',
               },
               EVENT_TRIGGERS.MEETING_MEDIA_REMOTE_STARTED,
               {
-                type: 'video'
+                type: 'video',
               }
             );
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.RECEIVING_MEDIA_START, data: {mediaType: 'video'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.RECEIVING_MEDIA_START,
+              data: {mediaType: 'video'},
+            });
           });
 
           it('REMOTE_MEDIA_STOPPED triggers the right metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STOPPED, {type: 'audio'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STOPPED,
+              {type: 'audio'}
+            );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.RECEIVING_MEDIA_STOP, data: {mediaType: 'audio'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.RECEIVING_MEDIA_STOP,
+              data: {mediaType: 'audio'},
+            });
           });
 
           it('MEDIA_QUALITY triggers the right metrics', async () => {
@@ -1173,7 +1204,10 @@ describe('plugin-meetings', () => {
               {data: fakeData, networkType: 'wifi'}
             );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.MEDIA_QUALITY, data: {intervalData: fakeData, networkType: 'wifi'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.MEDIA_QUALITY,
+              data: {intervalData: fakeData, networkType: 'wifi'},
+            });
           });
         }); */
       });
@@ -3014,7 +3048,8 @@ describe('plugin-meetings', () => {
         it('should throw an error if resourceId not passed', async () => {
           try {
             await meeting.moveTo();
-          } catch (err) {
+          }
+          catch (err) {
             assert.instanceOf(err, ParameterError);
             assert.equal(err.sdkMessage, 'Cannot move call without a resourceId.');
           }
@@ -3094,7 +3129,8 @@ describe('plugin-meetings', () => {
           MeetingUtil.joinMeeting = sinon.stub().returns(Promise.reject());
           try {
             await meeting.moveTo('resourceId');
-          } catch (e) {
+          }
+          catch (e) {
             assert.calledOnce(Metrics.sendBehavioralMetric);
             assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.MOVE_TO_FAILURE, {
               correlation_id: meeting.correlationId,
@@ -3107,7 +3143,8 @@ describe('plugin-meetings', () => {
           // meeting.reconnectionManager.reconnectMedia = sinon.stub().returns(Promise.reject());
           try {
             await meeting.moveTo('resourceId');
-          } catch (e) {
+          }
+          catch (e) {
             assert.calledOnce(Metrics.sendBehavioralMetric);
             assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.MOVE_TO_FAILURE, {
               correlation_id: meeting.correlationId,
@@ -3140,7 +3177,8 @@ describe('plugin-meetings', () => {
         it('should throw an error if resourceId not passed', async () => {
           try {
             await meeting.moveFrom();
-          } catch (err) {
+          }
+          catch (err) {
             assert.instanceOf(err, ParameterError);
 
             assert.equal(err.sdkMessage, 'Cannot move call without a resourceId.');
@@ -3172,7 +3210,8 @@ describe('plugin-meetings', () => {
           MeetingUtil.joinMeeting = sinon.stub().returns(Promise.reject());
           try {
             await meeting.moveFrom('resourceId');
-          } catch {
+          }
+          catch {
             assert.calledOnce(Metrics.sendBehavioralMetric);
             assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.MOVE_FROM_FAILURE, {
               correlation_id: meeting.correlationId,
@@ -4120,7 +4159,8 @@ describe('plugin-meetings', () => {
 
                 if (isEqual(newPayload.current, newPayload.previous)) {
                   eventTrigger.member = null;
-                } else {
+                }
+                else {
                   if (newPayload.current.whiteboard.beneficiaryId) {
                     if (newPayload.current.whiteboard.disposition === FLOOR_ACTION.GRANTED) {
                       newPayload.current.whiteboard.disposition = FLOOR_ACTION.RELEASED;
@@ -4143,7 +4183,8 @@ describe('plugin-meetings', () => {
                           eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_LOCAL,
                           functionName: 'stopFloorRequest',
                         });
-                      } else if (newPayload.current.content.beneficiaryId === USER_IDS.ME) {
+                      }
+                      else if (newPayload.current.content.beneficiaryId === USER_IDS.ME) {
                         eventTrigger.share.push({
                           eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_REMOTE,
                           functionName: 'remoteShare',
@@ -4166,7 +4207,8 @@ describe('plugin-meetings', () => {
                       eventName: EVENT_TRIGGERS.MEETING_STARTED_SHARING_LOCAL,
                       functionName: 'share',
                     });
-                  } else {
+                  }
+                  else {
                     eventTrigger.share.push({
                       eventName: EVENT_TRIGGERS.MEETING_STARTED_SHARING_REMOTE,
                       functionName: 'remoteShare',
@@ -4177,10 +4219,12 @@ describe('plugin-meetings', () => {
 
                 if (beneficiaryId === USER_IDS.ME) {
                   shareStatus = SHARE_STATUS.LOCAL_SHARE_ACTIVE;
-                } else {
+                }
+                else {
                   shareStatus = SHARE_STATUS.REMOTE_SHARE_ACTIVE;
                 }
-              } else {
+              }
+              else {
                 newPayload.current.whiteboard = generateWhiteboard(
                   beneficiaryId,
                   FLOOR_ACTION.GRANTED,
@@ -4195,7 +4239,8 @@ describe('plugin-meetings', () => {
                         eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_LOCAL,
                         functionName: 'stopFloorRequest',
                       });
-                    } else {
+                    }
+                    else {
                       eventTrigger.share.push({
                         eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_REMOTE,
                         functionName: 'remoteShare',
@@ -4217,7 +4262,8 @@ describe('plugin-meetings', () => {
                         eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_LOCAL,
                         functionName: 'stopFloorRequest',
                       });
-                    } else if (newPayload.current.content.beneficiaryId === USER_IDS.ME) {
+                    }
+                    else if (newPayload.current.content.beneficiaryId === USER_IDS.ME) {
                       eventTrigger.share.push({
                         eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_REMOTE,
                         functionName: 'remoteShare',
@@ -4252,7 +4298,8 @@ describe('plugin-meetings', () => {
               if (eventTrigger.member) {
                 eventTrigger.member.eventPayload.activeSharingId = beneficiaryId;
               }
-            } else {
+            }
+            else {
               eventTrigger.member.eventPayload.endedSharingId = beneficiaryId;
 
               if (isContent) {
@@ -4263,7 +4310,8 @@ describe('plugin-meetings', () => {
                     eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_LOCAL,
                     functionName: 'stopFloorRequest',
                   });
-                } else {
+                }
+                else {
                   eventTrigger.share.push({
                     eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_REMOTE,
                     functionName: 'remoteShare',
@@ -4271,7 +4319,8 @@ describe('plugin-meetings', () => {
                 }
 
                 shareStatus = SHARE_STATUS.NO_SHARE;
-              } else {
+              }
+              else {
                 newPayload.current.whiteboard.disposition = FLOOR_ACTION.RELEASED;
 
                 if (isAccepting) {
@@ -4285,7 +4334,8 @@ describe('plugin-meetings', () => {
                   });
 
                   shareStatus = SHARE_STATUS.WHITEBOARD_SHARE_ACTIVE;
-                } else {
+                }
+                else {
                   eventTrigger.share.push({
                     eventName: EVENT_TRIGGERS.MEETING_STOPPED_SHARING_WHITEBOARD,
                     functionName: 'stopWhiteboardShare',
@@ -4402,7 +4452,8 @@ describe('plugin-meetings', () => {
 
               if (share.length + 1 > offset) {
                 offset = (offset + share.length + 1) / 2;
-              } else if (share.length + 1 < offset) {
+              }
+              else if (share.length + 1 < offset) {
                 offset = share.length + 1 + 0.5;
               }
             }
