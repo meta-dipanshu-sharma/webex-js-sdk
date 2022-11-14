@@ -38,7 +38,8 @@ browserOnly(describe)('plugin-authorization-browser-first-party', () => {
           href,
         },
         sessionStorage: {
-          getItem: sinon.stub().onCall(0).returns(pkceVerifier).onCall(1).returns(csrfToken),
+          getItem: sinon.stub().onCall(0).returns(pkceVerifier).onCall(1)
+            .returns(csrfToken),
           removeItem: sinon.spy(),
           setItem: sinon.spy(),
         },
@@ -181,13 +182,11 @@ browserOnly(describe)('plugin-authorization-browser-first-party', () => {
       });
       describe('when the url contains an error', () => {
         it('throws a grant error', () => {
-          try {
-            return makeWebex(
+          assert.throws(() => {
+            makeWebex(
               'http://127.0.0.1:8000/?error=invalid_scope&error_description=The%20requested%20scope%20is%20invalid.'
             );
-          } catch (e) {
-            expect(e.message).toBe('Cannot convert object to primitive value');
-          }
+          }, /The requested scope is invalid./);
         });
       });
 

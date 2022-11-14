@@ -212,12 +212,10 @@ describe('plugin-meetings', () => {
       });
 
       it('if called twice, does bnr effect enable on audio track for the first request and resolves second', async () => {
-        // eslint-disable-next-line no-undef
-        MediaUtil.createMediaStream = sinon.stub().returns(new MediaStream());
         Promise.all([
           effects.handleClientRequest(true, meeting),
           effects.handleClientRequest(true, meeting),
-        ]).then(([resolveFirst, resolveSecond]) => {
+        ]).then((resolveFirst, resolveSecond) => {
           assert.isTrue(resolveFirst);
           assert.isTrue(resolveSecond);
           assert.calledOnce(MediaUtil.createMediaStream);
@@ -240,7 +238,8 @@ describe('plugin-meetings', () => {
         MediaUtil.createMediaStream = sinon.stub().returns(new MediaStream([fakeMediaTrack1()]));
         try {
           await effects.handleClientRequest(true, meeting);
-        } catch (err) {
+        }
+        catch (err) {
           assert(Metrics.sendBehavioralMetric.calledOnce);
           assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.ENABLE_BNR_FAILURE, {
             reason: err.message,
@@ -270,7 +269,8 @@ describe('plugin-meetings', () => {
       it('reject request for disable bnr if not enabled', async () => {
         try {
           await effects.handleClientRequest(false, meeting);
-        } catch (e) {
+        }
+        catch (e) {
           assert.equal(e.message, 'Can not disable as BNR is not enabled');
           assert.equal(effects.state.bnr.enabled, BNR_STATUS.ENABLED);
 

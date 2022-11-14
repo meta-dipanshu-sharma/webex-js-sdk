@@ -94,7 +94,7 @@ describe('webex-core', () => {
       it('successfully resolves with undefined if fetch request failed', () => {
         webex.request = sinon.stub().returns(Promise.reject());
 
-        return services.fetchClientRegionInfo().then((r) => {
+        return assert.isFulfilled(services.fetchClientRegionInfo()).then((r) => {
           assert.isUndefined(r);
         });
       });

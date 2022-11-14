@@ -127,8 +127,15 @@ describe('plugin-meetings', () => {
       const parameterErrorMessage =
         'requestingParticipantId must be defined, and the associated locus url for this meeting object must be defined.';
 
-      const checkInvalid = async (functionParams) =>
-        membersRequest.lowerAllHandsMember(functionParams);
+      const checkInvalid = async (functionParams) => {
+        assert.throws(
+          () => membersRequest.lowerAllHandsMember(functionParams),
+          ParameterError,
+          parameterErrorMessage
+        );
+        assert(membersRequest.request.notCalled);
+        assert(membersUtil.getLowerAllHandsMemberRequestParams.notCalled);
+      };
 
       it('rejects if no options are passed in', async () => {
         checkInvalid().catch((e) => {

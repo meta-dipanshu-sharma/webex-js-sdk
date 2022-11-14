@@ -189,13 +189,11 @@ browserOnly(describe)('plugin-authorization-browser', () => {
         });
 
         it('throws a grant error when the url contains one', () => {
-          try {
-            return makeWebexCore(
+          assert.throws(() => {
+            makeWebexCore(
               'http://127.0.0.1:8000/?error=invalid_scope&error_description=The%20requested%20scope%20is%20invalid.'
             );
-          } catch (e) {
-            expect(e.message).toBe('Cannot convert object to primitive value');
-          }
+          }, /The requested scope is invalid./);
         });
       });
 

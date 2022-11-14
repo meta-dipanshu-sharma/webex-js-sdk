@@ -103,10 +103,29 @@ describe('plugin-avatar', () => {
           );
       });
 
-      it('fails to retrieve an avatar url', async () => {
-        avatar._fetchAvatarUrl = jest
-          .fn()
-          .mockReturnValue(Promise.reject('fails to retrieve an avatar url'));
+      it('fails to retrieve an avatar url', () => {
+        webex.request = sinon.stub().returns(
+          Promise.reject(
+            new WebexHttpError.InternalServerError({
+              body: '',
+              statusCode: 500,
+              options: {
+                method: 'POST',
+                uri: 'https://avatar.example.com',
+                headers: {
+                  trackingid: 'tid',
+                },
+                body: [
+                  {
+                    uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
+                    sizes: [80],
+                    cacheControl: 'public max-age=3600',
+                  },
+                ],
+              },
+            })
+          )
+        );
 
         return avatar
           .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
@@ -522,94 +541,122 @@ describe('plugin-avatar', () => {
       });
 
       it('rejects each requested avatar if the api call fails', () => {
-        avatar._fetchAvatarUrl = jest.fn().mockReturnValue(Promise.reject('api call failed'));
+        webex.request = sinon.stub().returns(
+          Promise.reject(
+            new WebexHttpError.InternalServerError({
+              body: '',
+              statusCode: 500,
+              options: {
+                method: 'POST',
+                uri: 'https://avatar.example.com',
+                headers: {
+                  trackingid: 'tid',
+                },
+                body: [
+                  {
+                    uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
+                    sizes: [80],
+                    cacheControl: 'public max-age=3600',
+                  },
+                  {
+                    uuid: '88888888-4444-4444-4444-aaaaaaaaaaa1',
+                    sizes: [80],
+                    cacheControl: 'public max-age=3600',
+                  },
+                ],
+              },
+            })
+          )
+        );
 
         const a0 = avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0');
         const a1 = avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1');
 
-        return Promise.all([
-          a1.catch((err) => expect(err).toBe('api call failed')),
-          a0.catch((err) => expect(err).toBe('api call failed')),
-        ]).then(() => {
-          expect(avatar._fetchAvatarUrl).toHaveBeenCalledTimes(2);
+        return Promise.all([assert.isRejected(a1), assert.isRejected(a0)]).then(() => {
+          assert.callCount(webex.request, 1);
         });
       });
 
-      /* it('rejects each avatar missing from the response', () => {
-        webex.request = sinon.stub().returns(Promise.resolve({
-          body: {
-            '88888888-4444-4444-4444-aaaaaaaaaaa0': {
-              40: {
-                size: 40,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40',
-                cacheControl: 'public max-age=3600'
+      it('rejects each avatar missing from the response', () => {
+        webex.request = sinon.stub().returns(
+          Promise.resolve({
+            body: {
+              '88888888-4444-4444-4444-aaaaaaaaaaa0': {
+                40: {
+                  size: 40,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~40',
+                  cacheControl: 'public max-age=3600',
+                },
+                50: {
+                  size: 50,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~50',
+                  cacheControl: 'public max-age=3600',
+                },
+                80: {
+                  size: 80,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80',
+                  cacheControl: 'public max-age=3600',
+                },
+                110: {
+                  size: 110,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110',
+                  cacheControl: 'public max-age=3600',
+                },
+                135: {
+                  size: 135,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~135',
+                  cacheControl: 'public max-age=3600',
+                },
+                192: {
+                  size: 192,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~192',
+                  cacheControl: 'public max-age=3600',
+                },
+                640: {
+                  size: 640,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~640',
+                  cacheControl: 'public max-age=3600',
+                },
+                1600: {
+                  size: 1600,
+                  url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~1600',
+                  cacheControl: 'public max-age=3600',
+                },
               },
-              50: {
-                size: 50,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~50',
-                cacheControl: 'public max-age=3600'
-              },
-              80: {
-                size: 80,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80',
-                cacheControl: 'public max-age=3600'
-              },
-              110: {
-                size: 110,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~110',
-                cacheControl: 'public max-age=3600'
-              },
-              135: {
-                size: 135,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~135',
-                cacheControl: 'public max-age=3600'
-              },
-              192: {
-                size: 192,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~192',
-                cacheControl: 'public max-age=3600'
-              },
-              640: {
-                size: 640,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~640',
-                cacheControl: 'public max-age=3600'
-              },
-              1600: {
-                size: 1600,
-                url: 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~1600',
-                cacheControl: 'public max-age=3600'
-              }
-            }
-          },
-          statusCode: 200,
-          options: {
-            body: [
-              {
-                uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
-                sizes: [40, 50, 80, 110, 135, 192, 640, 1600]
-              },
-              {
-                uuid: '88888888-4444-4444-4444-aaaaaaaaaaa1',
-                sizes: [40, 50, 80, 110, 135, 192, 640, 1600]
-              }
-            ]
-          }
-        }));
+            },
+            statusCode: 200,
+            options: {
+              body: [
+                {
+                  uuid: '88888888-4444-4444-4444-aaaaaaaaaaa0',
+                  sizes: [40, 50, 80, 110, 135, 192, 640, 1600],
+                },
+                {
+                  uuid: '88888888-4444-4444-4444-aaaaaaaaaaa1',
+                  sizes: [40, 50, 80, 110, 135, 192, 640, 1600],
+                },
+              ],
+            },
+          })
+        );
 
         return Promise.all([
-          avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
-        ])
-          .then(([result]) => {
-            assert.deepEqual(result, 'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80');
-
-            return avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1');
-          })
-          .catch((e) => {
-            expect(e.message).toBe('Failed to retrieve avatar');
-
-            assert.callCount(webex.request, 2);
-          });
-      }); */
+          avatar
+            .retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa0')
+            .then((result) =>
+              assert.deepEqual(
+                result,
+                'https://example.com/88888888-4444-4444-4444-aaaaaaaaaaa0~80'
+              )
+            ),
+          assert.isRejected(
+            avatar.retrieveAvatarUrl('88888888-4444-4444-4444-aaaaaaaaaaa1'),
+            /Failed to retrieve avatar/
+          ),
+        ]).then(() => {
+          assert.callCount(webex.request, 1);
+        });
+      });
 
       it('retrieves avatar urls for homogenous, non-default sizes', () => {
         webex.request = sinon.stub().returns(

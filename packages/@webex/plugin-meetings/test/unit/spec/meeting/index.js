@@ -741,21 +741,11 @@ describe('plugin-meetings', () => {
             Transcription: jest.fn().mockImplementation(() => ({}))
           }));
 
-          // jest.mock('@webex/plugin-meetings/src/transcription');
-
-          jest.spyOn(meeting, 'request');
-          jest.spyOn(meeting, 'monitorTranscriptionSocketConnection');
-
-          await meeting.receiveTranscription();
-          expect(meeting.request).toHaveBeenCalled();
-          expect(meeting.monitorTranscriptionSocketConnection).toHaveBeenCalled();
-        }); */
-
-        it('should throw error', async () => {
-          meeting.request = jest.fn().mockReturnValue(Promise.reject('mock function error'));
-
-          await meeting.receiveTranscription();
-          expect(meeting.request).toHaveBeenCalled();
+          try {
+            await meeting.receiveTranscription();
+          } catch (err) {
+            assert(err, {});
+          }
         });
       });
       describe('#stopReceivingTranscription', () => {
@@ -845,9 +835,8 @@ describe('plugin-meetings', () => {
               try {
                 await meeting.join();
                 joinSucceeded = true;
-              }
-              catch (e) {
-                assert.calledOnce(MeetingUtil.joinMeetingOptions);
+              } catch (e) {
+                assert.instanceOf(e, IntentToJoinError);
               }
               assert.isFalse(joinSucceeded);
 
@@ -986,13 +975,17 @@ describe('plugin-meetings', () => {
 
         /* it('if an error occurs after media request has already been sent, and the user waits until the server kicks them out, a UserNotJoinedError should be thrown when attempting to addMedia again', async () => {
           meeting.meetingState = 'ACTIVE';
-          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(new Promise((resolve) => {
-            meeting.mediaProperties.peerConnection.connectionState = CONSTANTS.CONNECTION_STATE.CONNECTED;
-            resolve();
-          }).then(() => Promise.reject('sample error thrown')));
-
-          meeting.addMedia().catch(() => {
-            assert.calledOnce(meeting.roap.sendRoapMediaRequest);
+          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(
+            new Promise((resolve) => {
+              meeting.mediaProperties.peerConnection.connectionState =
+                CONSTANTS.CONNECTION_STATE.CONNECTED;
+              resolve();
+            }).then(() => {
+              throw new Error('sample error thrown');
+            })
+          );
+          await meeting.addMedia().catch((err) => {
+            assert.exists(err);
           });
           // After a couple seconds, server kicks user out
           meeting.locusInfo.parsedLocus = {self: {state: 'LEFT'}};
@@ -1003,20 +996,31 @@ describe('plugin-meetings', () => {
 
         /* it('if an error occurs after media request has already been sent, and the user does NOT wait until the server kicks them out, the user should be able to addMedia successfully', async () => {
           meeting.meetingState = 'ACTIVE';
-          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(new Promise((resolve, reject) => {
-            meeting.mediaProperties.peerConnection.connectionState = CONSTANTS.CONNECTION_STATE.CONNECTED;
-            reject('reject');
-          }));
-
-          meeting.addMedia().catch(() => {
-            //
+          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(
+            new Promise((resolve) => {
+              meeting.mediaProperties.peerConnection.connectionState =
+                CONSTANTS.CONNECTION_STATE.CONNECTED;
+              resolve();
+            }).then(() => {
+              throw new Error('sample error thrown');
+            })
+          );
+          await meeting.addMedia().catch((err) => {
+            assert.exists(err);
           });
 
           meeting.mediaProperties.peerConnection = {};
-          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(new Promise((resolve) => {
-            meeting.mediaProperties.peerConnection.connectionState = CONSTANTS.CONNECTION_STATE.CONNECTED;
-            resolve();
-          }));
+          meeting.roap.sendRoapMediaRequest = sinon.stub().returns(
+            new Promise((resolve) => {
+              meeting.mediaProperties.peerConnection.connectionState =
+                CONSTANTS.CONNECTION_STATE.CONNECTED;
+              resolve();
+            })
+          );
+          await meeting.addMedia().catch((err) => {
+            assert.fail('No error should appear: ', err);
+          });
+        });
 
           return meeting.addMedia()
             .then(() => {
@@ -1032,7 +1036,7 @@ describe('plugin-meetings', () => {
           }));
           MediaUtil.createPeerConnection.resetHistory();
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1047,9 +1051,9 @@ describe('plugin-meetings', () => {
           assert.calledOnce(MediaUtil.createPeerConnection);
           assert.calledWith(MediaUtil.createPeerConnection, undefined);
           /* statsAnalyzer is initiated inside of addMedia so there isn't
-          * a good way to mock it without mocking the constructor
-          */
-        // });
+           * a good way to mock it without mocking the constructor
+           */
+        });
 
         /* it('should pass the turn server info to the peer connection', async () => {
           const FAKE_TURN_URL = 'turns:webex.com:3478';
@@ -1062,10 +1066,10 @@ describe('plugin-meetings', () => {
           meeting.roap.doTurnDiscovery = sinon.stub().resolves({
             url: FAKE_TURN_URL,
             username: FAKE_TURN_USER,
-            password: FAKE_TURN_PASSWORD
+            password: FAKE_TURN_PASSWORD,
           });
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1076,7 +1080,7 @@ describe('plugin-meetings', () => {
           assert.calledWith(MediaUtil.createPeerConnection, {
             url: FAKE_TURN_URL,
             username: FAKE_TURN_USER,
-            password: FAKE_TURN_PASSWORD
+            password: FAKE_TURN_PASSWORD,
           });
         }); */
 
@@ -1084,7 +1088,7 @@ describe('plugin-meetings', () => {
           meeting.meetingState = 'ACTIVE';
           meeting.mediaProperties.peerConnection.connectionState = 'DISCONNECTED';
           const media = meeting.addMedia({
-            mediaSettings: {}
+            mediaSettings: {},
           });
 
           assert.exists(media);
@@ -1108,7 +1112,7 @@ describe('plugin-meetings', () => {
             sinon.stub(StatsAnalyzerModule, 'StatsAnalyzer').returns(statsAnalyzerStub);
 
             await meeting.addMedia({
-              mediaSettings: {}
+              mediaSettings: {},
             });
           });
 
@@ -1117,51 +1121,79 @@ describe('plugin-meetings', () => {
           });
 
           it('LOCAL_MEDIA_STARTED triggers "meeting:media:local:start" event and sends metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STARTED, {type: 'audio'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STARTED,
+              {type: 'audio'}
+            );
 
             assert.calledWith(
               TriggerProxy.trigger,
               sinon.match.instanceOf(Meeting),
               {
                 file: 'meeting/index',
-                function: 'addMedia'
+                function: 'addMedia',
               },
               EVENT_TRIGGERS.MEETING_MEDIA_LOCAL_STARTED,
               {
-                type: 'audio'
+                type: 'audio',
               }
             );
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.SENDING_MEDIA_START, data: {mediaType: 'audio'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.SENDING_MEDIA_START,
+              data: {mediaType: 'audio'},
+            });
           });
 
           it('LOCAL_MEDIA_STOPPED triggers the right metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STOPPED, {type: 'video'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.LOCAL_MEDIA_STOPPED,
+              {type: 'video'}
+            );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.SENDING_MEDIA_STOP, data: {mediaType: 'video'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.SENDING_MEDIA_STOP,
+              data: {mediaType: 'video'},
+            });
           });
 
           it('REMOTE_MEDIA_STARTED triggers "meeting:media:remote:start" event and sends metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STARTED, {type: 'video'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STARTED,
+              {type: 'video'}
+            );
 
             assert.calledWith(
               TriggerProxy.trigger,
               sinon.match.instanceOf(Meeting),
               {
                 file: 'meeting/index',
-                function: 'addMedia'
+                function: 'addMedia',
               },
               EVENT_TRIGGERS.MEETING_MEDIA_REMOTE_STARTED,
               {
-                type: 'video'
+                type: 'video',
               }
             );
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.RECEIVING_MEDIA_START, data: {mediaType: 'video'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.RECEIVING_MEDIA_START,
+              data: {mediaType: 'video'},
+            });
           });
 
           it('REMOTE_MEDIA_STOPPED triggers the right metrics', async () => {
-            statsAnalyzerStub.emit({file: 'test', function: 'test'}, StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STOPPED, {type: 'audio'});
+            statsAnalyzerStub.emit(
+              {file: 'test', function: 'test'},
+              StatsAnalyzerModule.EVENTS.REMOTE_MEDIA_STOPPED,
+              {type: 'audio'}
+            );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.RECEIVING_MEDIA_STOP, data: {mediaType: 'audio'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.RECEIVING_MEDIA_STOP,
+              data: {mediaType: 'audio'},
+            });
           });
 
           it('MEDIA_QUALITY triggers the right metrics', async () => {
@@ -1173,7 +1205,10 @@ describe('plugin-meetings', () => {
               {data: fakeData, networkType: 'wifi'}
             );
 
-            assert.calledWithMatch(Metrics.postEvent, {event: eventType.MEDIA_QUALITY, data: {intervalData: fakeData, networkType: 'wifi'}});
+            assert.calledWithMatch(Metrics.postEvent, {
+              event: eventType.MEDIA_QUALITY,
+              data: {intervalData: fakeData, networkType: 'wifi'},
+            });
           });
         }); */
       });
@@ -2055,13 +2090,9 @@ describe('plugin-meetings', () => {
           });
 
           it('throws if trying to send renderInfo for content when not receiving content', async () => {
-            meeting
-              .changeVideoLayout(layoutTypeSingle, {content: {width: 1280, height: 720}})
-              .catch((e) => {
-                expect(e.message).toBe(
-                  'Meeting:index#changeVideoLayout --> unable to send renderInfo for content, you are not receiving remote share'
-                );
-              });
+            assert.isRejected(
+              meeting.changeVideoLayout(layoutTypeSingle, {content: {width: 1280, height: 720}})
+            );
           });
 
           it('calls changeVideoLayoutDebounced with renderInfo for main and content', async () => {
@@ -3094,7 +3125,7 @@ describe('plugin-meetings', () => {
           MeetingUtil.joinMeeting = sinon.stub().returns(Promise.reject());
           try {
             await meeting.moveTo('resourceId');
-          } catch (e) {
+          } catch {
             assert.calledOnce(Metrics.sendBehavioralMetric);
             assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.MOVE_TO_FAILURE, {
               correlation_id: meeting.correlationId,
@@ -3107,7 +3138,15 @@ describe('plugin-meetings', () => {
           // meeting.reconnectionManager.reconnectMedia = sinon.stub().returns(Promise.reject());
           try {
             await meeting.moveTo('resourceId');
-          } catch (e) {
+
+            await meeting.locusInfo.emitScoped(
+              {
+                file: 'locus-info',
+                function: 'updateSelf',
+              },
+              'SELF_OBSERVING'
+            );
+          } catch {
             assert.calledOnce(Metrics.sendBehavioralMetric);
             assert.calledWith(Metrics.sendBehavioralMetric, BEHAVIORAL_METRICS.MOVE_TO_FAILURE, {
               correlation_id: meeting.correlationId,

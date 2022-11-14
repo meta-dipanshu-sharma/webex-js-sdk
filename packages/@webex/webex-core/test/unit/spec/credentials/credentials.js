@@ -287,7 +287,7 @@ describe('webex-core', () => {
       });
 
       it('should throw if the OrgId was not determined', () =>
-        expect(() => credentials.getOrgId()).toThrow('the provided token is not a valid format'));
+        assert.throws(() => credentials.getOrgId(), 'the provided token is not a valid format'));
     });
 
     describe('#extractOrgIdFromJWT()', () => {
@@ -453,7 +453,7 @@ describe('webex-core', () => {
         const supertoken = makeToken(webex, {
           access_token: 'ST',
           refresh_token: 'RT',
-          expires: Date.now() - 10000
+          expires: Date.now() - 10000,
         });
 
         sinon.stub(supertoken, 'refresh').returns(Promise.reject());
@@ -717,7 +717,7 @@ describe('webex-core', () => {
           .then(() => assert.isRejected(webex.boundedStorage.get('Credentials', '@'), /NotFound/));
       });
 
-      // it('does not induce any token refreshes');
+      it('does not induce any token refreshes');
 
       it('prevents #getUserToken() from being invoked', () => {
         const webex = new MockWebex();
@@ -745,8 +745,7 @@ describe('webex-core', () => {
             assert.isRejected(
               credentials.getUserToken(),
               /Current state cannot produce an access token/
-            )
-          );
+            ));
       });
     });
 

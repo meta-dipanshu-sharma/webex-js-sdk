@@ -28,9 +28,9 @@ describe('presence-worker', () => {
 
     describe('#initialize()', () => {
       it('requires webex', () =>
-        expect(() => worker.initialize()).toThrow(/Must initialize Presence Worker with webex!/));
+        assert.throws(worker.initialize, /Must initialize Presence Worker with webex!/));
       it('requires webex internal', () =>
-        expect(() => worker.initialize({})).toThrow(/Must initialize Presence Worker with webex!/));
+        assert.throws(() => worker.initialize({}), /Must initialize Presence Worker with webex!/));
     });
 
     describe('#enqueue()', () => {
