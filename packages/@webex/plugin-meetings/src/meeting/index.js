@@ -81,7 +81,6 @@ import RoapCollection from '../roap/collection';
 
 import InMeetingActions from './in-meeting-actions';
 
-
 const {isBrowser} = BrowserDetection();
 
 const logRequest = (request, {header = '', success = '', failure = ''}) => {
@@ -5261,7 +5260,7 @@ export default class Meeting extends StatelessWebexPlugin {
 
     if (layoutType) {
       if (!LAYOUT_TYPES.includes(layoutType)) {
-        this.rejectWithErrorLog('Meeting:index#changeVideoLayout --> cannot change video layout, invalid layoutType recieved.');
+        return this.rejectWithErrorLog('Meeting:index#changeVideoLayout --> cannot change video layout, invalid layoutType recieved.');
       }
 
       layoutInfo.layoutType = layoutType;
