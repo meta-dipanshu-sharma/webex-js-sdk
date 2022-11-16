@@ -3,6 +3,7 @@
  */
 
 import {assert} from '@webex/test-helper-chai';
+import {beforeAll} from '@jest/globals';
 
 function noop() {
   // intentionally empty
@@ -36,7 +37,7 @@ export default function runAbstractStorageAdapterSpec(adapter) {
     describe('bound', () => {
       let bound;
 
-      before(() => adapter.bind(namespace, options)
+      beforeAll(() => adapter.bind(namespace, options)
         .then((b) => {
           bound = b;
         }));

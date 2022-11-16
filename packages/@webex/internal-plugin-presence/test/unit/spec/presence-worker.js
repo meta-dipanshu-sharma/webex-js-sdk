@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import Mercury from '@webex/internal-plugin-mercury';
 import Presence from '@webex/internal-plugin-presence';
 import MockWebex from '@webex/test-helper-mock-webex';
+import {expect} from '@jest/globals';
 
 import PresenceWorker from '../../../src/presence-worker';
 
@@ -26,14 +27,10 @@ describe('presence-worker', () => {
     });
 
     describe('#initialize()', () => {
-      it('requires webex', () => assert.throws(
-        worker.initialize,
-        /Must initialize Presence Worker with webex!/
-      ));
-      it('requires webex internal', () => assert.throws(
-        () => worker.initialize({}),
-        /Must initialize Presence Worker with webex!/
-      ));
+      it('requires webex', () =>
+        expect(() => worker.initialize()).toThrow(/Must initialize Presence Worker with webex!/));
+      it('requires webex internal', () =>
+        expect(() => worker.initialize({})).toThrow(/Must initialize Presence Worker with webex!/));
     });
 
     describe('#enqueue()', () => {

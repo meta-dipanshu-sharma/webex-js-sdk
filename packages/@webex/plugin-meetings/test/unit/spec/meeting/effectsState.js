@@ -215,8 +215,10 @@ describe('plugin-meetings', () => {
       });
 
       it('if called twice, does bnr effect enable on audio track for the first request and resolves second', async () => {
+        // eslint-disable-next-line no-undef
+        MediaUtil.createMediaStream = sinon.stub().returns(new MediaStream());
         Promise.all([effects.handleClientRequest(true, meeting), effects.handleClientRequest(true, meeting)])
-          .then((resolveFirst, resolveSecond) => {
+          .then(([resolveFirst, resolveSecond]) => {
             assert.isTrue(resolveFirst);
             assert.isTrue(resolveSecond);
             assert.calledOnce(MediaUtil.createMediaStream);

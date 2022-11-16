@@ -39,7 +39,7 @@ class EffectsState {
     return new Promise((resolve, reject) => {
       if (this.pendingPromiseResolve) {
         // resolve the last promise we returned to the client as the client has issued a new request that has superseded the previous one
-        this.pendingPromiseResolve();
+        this.pendingPromiseResolve(true);
       }
       this.pendingPromiseResolve = resolve;
       this.pendingPromiseReject = reject;
@@ -131,9 +131,8 @@ class EffectsState {
           stack: error.stack
         }
       );
-      this.rejectPromise(error);
 
-      throw error;
+      return this.rejectPromise(error);
     }
 
     return this.resolvePromise();
@@ -193,9 +192,8 @@ class EffectsState {
           stack: error.stack
         }
       );
-      this.rejectPromise(error);
 
-      throw error;
+      return this.rejectPromise(error);
     }
 
     return this.resolvePromise();
