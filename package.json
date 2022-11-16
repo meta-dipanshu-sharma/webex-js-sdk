@@ -40,7 +40,7 @@
     "lint:js": "yarn run --silent lint:eslint -- .",
     "lint:staged": "lint-staged",
     "test": "node ./tooling/index.js test",
-    "test:unit": "node ./tooling/index.js test --unit --node",
+    "test:unit": "yarn run jest --selectProjects",
     "test:integration": "node ./tooling/index.js test --integration --browser",
     "test:ci:github": "node ./tooling/index.js ci --github",
     "test:ci:integration": "node ./tooling/index.js ci --integration",
