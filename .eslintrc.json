@@ -6,6 +6,9 @@
     "sourceType": "module",
     "requireConfigFile": true
   },
+  "env": {
+    "jest": true
+  },
   "globals": {
     "PACKAGE_VERSION": false,
     "WebSocket": false
