@@ -1110,7 +1110,6 @@ async function deleteContact(contactId) {
 
 async function createCloudContact() {
   console.log('Create Cloud Contact');
-
   const formData = new FormData(cloudContactsElem);
 
   const contact = {
