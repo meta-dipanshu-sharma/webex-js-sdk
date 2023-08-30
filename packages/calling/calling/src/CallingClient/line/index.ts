@@ -13,8 +13,6 @@ import {LineError} from '../../Errors/catalog/LineError';
 import {LOGGER} from '../../Logger/types';
 import {validateServiceData} from '../../common';
 import SDKConnector from '../../SDKConnector';
-import {EVENT_KEYS} from '../../Events/types';
-import {CallingClientError} from '../../Errors';
 
 export default class Line extends Eventing<LineEventTypes> implements ILine {
   #webex: WebexSDK;
@@ -70,7 +68,6 @@ export default class Line extends Eventing<LineEventTypes> implements ILine {
     mutex: Mutex,
     primaryMobiusUris: string[],
     backupMobiusUris: string[],
-    callingClientEmitter: (event: EVENT_KEYS, clientError?: CallingClientError) => void,
     logLevel: LOGGER,
     serviceDataConfig?: CallingClientConfig['serviceData'],
     phoneNumber?: string,
@@ -104,7 +101,6 @@ export default class Line extends Eventing<LineEventTypes> implements ILine {
       serviceData,
       this.#mutex,
       this.lineEmitter,
-      callingClientEmitter,
       logLevel
     );
 
