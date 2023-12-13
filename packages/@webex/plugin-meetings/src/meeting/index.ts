@@ -2047,7 +2047,6 @@ export default class Meeting extends StatelessWebexPlugin {
           modifiedBy,
           lastModified,
         };
-
         Trigger.trigger(
           this,
           {
@@ -4609,6 +4608,7 @@ export default class Meeting extends StatelessWebexPlugin {
         joinSuccess(join);
 
         this.deferJoin = undefined;
+        this.receiveTranscription = !!options.receiveTranscription;
 
         return join;
       })
@@ -4668,12 +4668,12 @@ export default class Meeting extends StatelessWebexPlugin {
       .then((join) => {
         if (isBrowser) {
           // @ts-ignore - config coming from registerPlugin
-          if (this.config.receiveTranscription || options.receiveTranscription) {
+          if (this.config.receiveTranscription || this.receiveTranscription) {
             if (this.isTranscriptionSupported()) {
               LoggerProxy.logger.info(
                 'Meeting:index#join --> Attempting to enabled to recieve transcription!'
               );
-              this.receiveTranscription().catch((error) => {
+              this.startTranscription().catch((error) => {
                 LoggerProxy.logger.error(
                   'Meeting:index#join --> Receive Transcription Failed',
                   error
