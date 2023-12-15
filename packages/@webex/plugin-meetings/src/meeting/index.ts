@@ -1,6 +1,6 @@
 import uuid from 'uuid';
 import {cloneDeep, isEqual, isEmpty} from 'lodash';
-import jwt from 'jsonwebtoken';
+import {jwtDecode as decode} from 'jwt-decode';
 // @ts-ignore - Fix this
 import {StatelessWebexPlugin} from '@webex/webex-core';
 import {
@@ -3413,7 +3413,7 @@ export default class Meeting extends StatelessWebexPlugin {
    * @returns {void}
    */
   public setPermissionTokenPayload(permissionToken: string) {
-    this.permissionTokenPayload = jwt.decode(permissionToken);
+    this.permissionTokenPayload = decode(permissionToken);
   }
 
   /**
