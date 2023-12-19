@@ -127,7 +127,7 @@ function initOauth() {
   if (window.location.pathname) {
     redirectUri += window.location.pathname;
   }
-
+  console.log('testing int tests')
   webex = window.webex = Webex.init({
     config: generateWebexConfig({
       credentials: {
