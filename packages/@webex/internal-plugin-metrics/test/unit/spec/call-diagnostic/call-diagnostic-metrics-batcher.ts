@@ -291,6 +291,7 @@ describe('plugin-metrics', () => {
         })
       });
 
+      //TODO: The following two skipped tests needs investigation: https://jira-eng-gpk2.cisco.com/jira/browse/SPARK-485382
       describe('when the request fails', () => {
         it.skip('does not clear the queue', async () => {
           // avoid setting .sent timestamp
@@ -320,6 +321,7 @@ describe('plugin-metrics', () => {
 
           const loggerLogCalls = webex.logger.log.getCalls();
 
+          //TODO: Logger related checks needs to be removed: https://jira-eng-gpk2.cisco.com/jira/browse/SPARK-483904
           assert.deepEqual(loggerLogCalls[0].args, [
             'call-diagnostic-events -> ',
             'CallDiagnosticMetrics: @submitToCallDiagnostics. Preparing to send the request',
