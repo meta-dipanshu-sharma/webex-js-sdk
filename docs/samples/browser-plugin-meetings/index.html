@@ -98,12 +98,15 @@
               access token
             </p>
             <div>
-              <input id="access-token" name="accessToken" placeholder="Access Token" value="" type="text" style="display: inline;" required>
+              <input id="guest-name" name="guestName" placeholder="Guest Name" value="guest user" type="text">
+              <button id="get-guest-token" class="btn-code" type="button" onclick=getGuestAccessToken()>generate
+                Guest Token [prod only]</button>
+              <input id="access-token" name="accessToken" placeholder="Access Token" value="" type="text">
               <button id="access-token-save" class="btn-code" type="submit">webex.init()</button>
               <p id="access-token-status" class="status-par">Not initialized</p>
             </div>
           </form>
-    
+
           <form id="oauth" class="hidden">
             <div>
               <button id="oauth-login-btn" type="submit" class="btn-code">Login</button>
@@ -112,146 +115,9 @@
           </form>
         </fieldset>
 
-
-        <!-- meeting / authentication-registration -->
-        <div>
-          <form id="auth-registration">
+        <form id="streams">
             <fieldset>
-              <legend>Authentication</legend>
-
-              <div>
-                <legend>Environment</legend>
-                <input type="checkbox" id="integration-env">
-                <label for="integration-env">Enable Integration Environment</label><br>
-              </div>
-
-              <div>
-                <legend>FedRAMP</legend>
-                <input type="checkbox" id="enable-fedramp">
-                <label for="enable-fedramp">Enable Fedramp</label>
-              </div>
-
-              <div>
-                <legend>Meetings</legend>
-                <input type="checkbox" checked id="enable-turn-discovery">
-                <label for="enable-turn-discovery">Enable TURN discovery (experimental)</label>
-              </div>
-
-
-              <form id="credentials">
-                <p class="note">
-                  NOTE: Click <a href="https://developer.webex.com/docs/getting-started" target="_blank">here</a> for
-                  access token
-                </p>
-                <div>
-                  <input id="guest-name" name="guestName" placeholder="Guest Name" value="guest user" type="text">
-                  <button id="get-guest-token" class="btn-code" type="button" onclick=getGuestAccessToken()>generate
-                    Guest Token [prod only]</button>
-                  <input id="access-token" name="accessToken" placeholder="Access Token" value="" type="text">
-                  <button id="access-token-save" class="btn-code" type="submit">webex.init()</button>
-                  <p id="access-token-status" class="status-par">Not initialized</p>
-                </div>
-              </form>
-
-              <form id="oauth" class="hidden">
-                <div>
-                  <button id="oauth-login-btn" type="submit" class="btn-code">Login</button>
-                  <p id="oauth-status" class="status-par">Not Logged In.</p>
-                </div>
-              </form>
-            </fieldset>
-          </div>
-
-          <!-- Streams / effects -->
-          <div>
-            <form id="streams">
-              <fieldset>
-                <legend>Streams</legend>
-                <p class="note">
-                  NOTE: Can start audio/video without a meeting(or click Get Media Streams after joining meeting) and
-                  play around with effects.
-                  Audio/video streams will persist after leaving a meeting as well and can be used in another meeting.
-                </p>
-                <div class="video-section">
-                  <div class="flex" style="gap: 0.5rem;">
-                    <fieldset>
-                      <legend>Local Video</legend>
-                      <div class="video-container">
-                        <video id="local-video" class="video-el" muted="true" autoplay playsinline
-                          style="height: 250px;"></video>
-                        <span id="local-video-resolution" class="video-resolution"></span>
-                        <span id="local-video-published-state" class="video-published"></span>
-                      </div>
-                    </fieldset>
-
-                    <fieldset style="display: flex; align-items: center;">
-                      <legend>Local Audio</legend>
-                      <div class="audio-container">
-                        <audio id="local-audio" muted controls></audio>
-                        <span id="local-audio-published-state" class="audio-published"></span>
-                      </div>
-                    </fieldset>
-
-                  </div>
-                  <div class="flex">
-                    <!--enable virtual bg -->
-                    <div class="u-mb">
-                      <button id="ts-load-camera" type="button" onclick="loadCamera()" class="btn-code">Load
-                        Camera</button>
-                    </div>
-                    <div class="u-mb">
-                      <select name="mode" id="mode-type">
-                        <option value="BLUR" selected="selected">Blur</option>
-                        <option value="IMAGE">Image</option>
-                        <option value="VIDEO">Video</option>
-                      </select>
-                    </div>
-                    <div class="u-mb">
-                      <button id="ts-enable-VBG" type="button" onclick="handleVbg()" class="btn-code">Enable
-                        VBG</button>
-                    </div>
-                    <!--mute-unmute-video -->
-                    <div class="u-mb">
-                      <button id="ts-toggle-video" type="button" onclick="toggleSendVideo()" class="btn-code">Toggle
-                        Video</button>
-                    </div>
-                    <div class="u-mb">
-                      <button id="ts-stop-video" type="button" disabled onclick="stopVideo()" class="btn-code">Stop
-                        Video</button>
-                    </div>
-                  </div>
-
-
-                  <div class="flex">
-                    <!--enable noise reduction -->
-                    <div class="u-mb">
-                      <button id="ts-load-mic" type="button" onclick="loadMicrophone()" class="btn-code">Load
-                        Microhone</button>
-                    </div>
-                    <div class="u-mb">
-                      <button id="ts-enable-BNR" type="button" onclick="handleBNR()" class="btn-code">Enable
-                        BNR</button>
-                    </div>
-                    <!--mute-unmute audio -->
-                    <div class="u-mb">
-                      <button id="ts-toggle-audio" type="button" onclick="toggleSendAudio()" class="btn-code">Mute
-                        Audio</button>
-                    </div>
-                    <div class="u-mb">
-                      <button id="ts-stop-audio" type="button" disabled onclick="stopAudio()" class="btn-code">Stop
-                        Audio</button>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-
-          <!-- local screen share -->
-
-          <form id="streams">
-            <fieldset>
-              <legend>Local Screenshare</legend>
+              <legend>Registration</legend>
               <p class="note">
                 NOTE: Webex JS SDK must be registered as a device.
               </p>
@@ -274,7 +140,6 @@
             </fieldset>
           </form>
         </div>
-
       </div>
     </section>
   </div>
